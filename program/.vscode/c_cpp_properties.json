@@ -1,0 +1,17 @@
+{
+    "configurations": [{
+        "name": "RISC V",
+        "includePath": [
+            "App/src/**",
+            "Lib/inc/**"
+        ],
+        "defines": [
+            
+        ],
+        "compilerPath": "~/.local/xPacks/@xpack-dev-tools/riscv-none-embed-gcc/10.1.0-1.1.1/.content/bin/riscv-none-embed-gcc",
+        "cStandard": "c99",
+        "cppStandard": "c++11",
+        "intelliSenseMode": "gcc-arm"
+    }],
+    "version": 4
+}           

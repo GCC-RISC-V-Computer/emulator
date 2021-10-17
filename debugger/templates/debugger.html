@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Debugger</title>
+    <!-- <link type="text/css" rel="stylesheet" href="{{ url_for("static", filename="css/main.css") }}"> -->
+    <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='css/debugger.css') }}">
+
+    <script type="text/javascript" src="{{ url_for('static', filename='js/socket.io.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/popper.min.js') }}" defer></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/bootstrap.min.js') }}" defer></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery.mark.min.js') }}" charset="UTF-8"></script>
+
+    <script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}" charset="UTF-8"></script>
+</head>
+<body>
+<div class="debug-col vga-etc">
+    <div class="box-border debug-row">
+        <!-- <iframe class="vga-frame" src='/'></iframe> -->
+        <label class="debug-column-header">VGA Monitor</label>
+        <div class="vga-output-wrapper">
+            <img class="image vga-output w-100" src="{{ url_for('static', filename='vga-blank.png') }}">
+        </div>
+    </div>
+
+    <div class="row text-center mx-1">
+        <div class="debug-control box-border col-sm-5" style="position: relative; margin-left: 0;">
+            <label class="debug-column-header" style="">Debug control</label>
+
+            <button type="button" class="btn btn-success start starting-btn">Start</button>
+            <button type="button" class="btn btn-danger stop starting-btn">Stop</button>
+            <!-- <button type="button" class="btn btn-warning restart">Reset-NE</button> -->
+
+            <div class="mt-4" style="margin: 10px;">
+                <label for="ports">Choose serial port:</label>
+                <select class="form-select" id="ports" aria-label="Choose serial port">
+                    <!-- <option value="volvo">Volvo</option>
+                    <option value="saab">Saab</option>
+                    <option value="opel">Opel</option>
+                    <option value="audi">Audi</option> -->
+                    <!-- Z pythonu -->
+                </select>
+            </div>
+            <button type="button" class="btn btn-primary connect mt-2">Connect</button>
+            <button type="button" class="btn btn-primary refresh mt-2">Refresh</button>
+        </div>
+        <div class="box-border col-2" id="cpu-status-box">
+            <label class="debug-column-header">Status</label>
+            <!-- <div class="row">
+                <div class="col-6">CPU BUSY</div>
+                <div class="col-6" >Y</div>
+            </div>
+            <div class="row">
+                <div class="col-6">HALT</div>
+                <div class="col-6" >Y</div>
+            </div> -->
+            <button type="button" class="btn btn-sm status-btn rounded-pill px-3 w-100" id="running">Running</button>
+            <button type="button" class="btn btn-sm status-btn rounded-pill px-3 w-100" id="clock">Clock</button>
+            <button type="button" class="btn btn-sm status-btn rounded-pill px-3 w-100" id="cpu-busy">CPU Busy</button>
+            <button type="button" class="btn btn-sm status-btn rounded-pill px-3 w-100" id="branch">Branch</button>
+            <button type="button" class="btn btn-sm status-btn rounded-pill px-3 w-100" id="error">ERROR</button>
+        </div>
+
+        <div class="debug-control box-border col-sm-5 text-left" style="position: relative;">
+            <label class="debug-column-header">Pulse control</label>
+
+            <div class="row mb-2">
+                <div class="col-8">
+                    <strong>Pulse counter</strong> <span id="pulse-counter">0</span>
+                </div>
+                <div class="col-4">
+                    <strong>uCounter</strong> <span id="u-counter">0</span>
+                </div>
+            </div>
+            <div>
+                <button type="button" class="btn btn-success plus" id="-1">Run</button>
+                <button type="button" class="btn btn-outline-info plus" id="1">+ 1</button>
+                <button type="button" class="btn btn-outline-info plus" id="10">+ 10</button>
+                <button type="button" class="btn btn-outline-info plus" id="100">+ 100</button>
+                <button type="button" class="btn btn-danger plus" id="0">Halt</button>
+            </div>
+            <div class="mt-2">
+                <label for="pulse-jump">Jump over</label>
+                <input type="number" class="form-control" id="pulse-jump">
+                <button type="button" class="btn btn-danger pulse-jump-btn">Jump</button>
+
+            </div>
+            <!-- <div class="text-start mt-2 mb-0">
+                <label for="customRange1" class="form-label">CPU Speed</label>
+                <input type="range" class="form-range" id="speed">
+            </div> -->
+        </div>
+    </div>
+
+    <div class="row mx-1 my-3">
+        <div class="debug-control box-border col-sm-12 text-left w-100" style="position: relative; margin-right: 0;">
+            <label class="debug-column-header">Microcodes</label>
+            <table class="table-microcodes table table-sm align-middle text-center table-bordered">
+                <thead>
+                <tr>
+                    <th scope="col">Ins</th>
+                    <th scope="col">M0</th>
+                    <th scope="col">M1</th>
+                    <th scope="col">M2</th>
+                    <th scope="col">M3</th>
+                    <th scope="col">M4</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <th rowspan="10" id="ins"></th>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+
+                {% for i in range(5) %}
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                {% endfor %}
+
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+</div>
+
+<div class="debug-col">
+    <div class="box-border debug-row">
+        <label class="debug-column-header">Source code</label>
+        <div class="src-code scrollable" id="src-1"></div>
+    </div>
+</div>
+
+<div class="debug-col">
+    <div class="box-border debug-row register-file">
+        <label class="debug-column-header">Register file (simulated)</label>
+        <div class="scrollable">
+            <table class="table table-sm table-striped" style="font-size: 7pt;">
+                <thead>
+                <tr>
+                    <th>Register</th>
+                    <th>ABI</th>
+                    <th>Data hexa</th>
+                    <th>Data bin</th>
+                </tr>
+                </thead>
+                {% set bin_ = "0b0000000000000000000000000000000" %}
+                {% set hex_ = "0x00000000" %}
+                {% set register_file = [
+                ["x0", "zero"],
+                ["x1", "ra"],
+                ["x2", "sp"],
+                ["x3", "gp"],
+                ["x4", "tp"],
+                ["x5", "t0"],
+                ["x6", "t1"],
+                ["x7", "t2"],
+                ["x8", "s0/fp"],
+                ["x9", "s1"],
+                ["x10", "a0"],
+                ["x11", "a1"],
+                ["x12", "a2"],
+                ["x13", "a3"],
+                ["x14", "a4"],
+                ["x15", "a5"],
+                ["x16", "a6"],
+                ["x17", "a7"],
+                ["x18", "s2"],
+                ["x19", "s3"],
+                ["x20", "s4"],
+                ["x21", "s5"],
+                ["x22", "s6"],
+                ["x23", "s7"],
+                ["x24", "s8"],
+                ["x25", "s9"],
+                ["x26", "s10"],
+                ["x27", "s11"],
+                ["x28", "t3"],
+                ["x29", "t4"],
+                ["x30", "t5"],
+                ["x31", "a6"],
+                ] %}
+                <tbody>
+                {% for i in register_file %}
+                <tr>
+                    <td>{{ i[0] }}</td>
+                    <td>{{ i[1] }}</td>
+                    <td id="hex-{{ i[0] }}">{{ hex_ }}</td>
+                    <td id="bin-{{ i[0] }}">{{ bin_ }}</td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="debug-col">
+    <div class="box-border debug-row">
+        <label class="debug-column-header">Data</label>
+        <!-- <div class="src-code scrollable" id="src-1"></div> -->
+        <table class="table table-sm table-striped">
+            <thead>
+            <tr>
+                <th scope="col" style="padding-right: 70px;">Name</th>
+                <th scope="col" style="padding-right: 70px;">Simulated</th>
+                <th scope="col" style="padding-right: 70px;">CPU</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>Address</td>
+                <td id="data-sim-addr">0x00000000</td>
+                <td id="data-cpu-addr">---</td>
+            </tr>
+            <tr>
+                <td>Instruction</td>
+                <td id="data-sim-ins">0x00000000</td>
+                <td id="data-cpu-ins">---</td>
+            </tr>
+            <tr>
+                <td>Immediate</td>
+                <td id="data-sim-imm">0x00000000</td>
+                <td id="data-cpu-imm">---</td>
+            </tr>
+            <tr>
+                <td>RB0</td>
+                <td id="data-sim-rb0">0x00000000</td>
+                <td id="data-cpu-rb0">---</td>
+            </tr>
+            <tr>
+                <td>RB1</td>
+                <td id="data-sim-rb1">0x00000000</td>
+                <td id="data-cpu-rb1">---</td>
+            </tr>
+            <tr>
+                <td>ALU</td>
+                <td id="data-sim-alu">0x00000000</td>
+                <td id="data-cpu-alu">---</td>
+            </tr>
+            <tr>
+                <td>RAM</td>
+                <td id="data-sim-ram">0x00000000</td>
+                <td id="data-cpu-ram">---</td>
+            </tr>
+            <tr>
+                <td>Writeback</td>
+                <td id="data-sim-wb">0x00000000</td>
+                <td id="data-cpu-wb">---</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>

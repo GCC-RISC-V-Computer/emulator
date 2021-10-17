@@ -1,0 +1,31 @@
+
+build/APP.elf:     file format elf32-littleriscv
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         00000030  00000000  00000000  00001000  2**2
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .stack        00000400  00000000  00000030  00002000  2**0
+                  ALLOC
+  2 .comment      00000034  00000000  00000000  00001030  2**0
+                  CONTENTS, READONLY
+
+Disassembly of section .text:
+
+00000000 <main>:
+   0:	fe010113          	addi	sp,sp,-32
+   4:	00812e23          	sw	s0,28(sp)
+   8:	02010413          	addi	s0,sp,32
+   c:	aaaab7b7          	lui	a5,0xaaaab
+  10:	aaa78793          	addi	a5,a5,-1366 # aaaaaaaa <_estack+0xaaa2aaae>
+  14:	fef42623          	sw	a5,-20(s0)
+  18:	0000006f          	j	18 <main+0x18>
+
+0000001c <_start>:
+  1c:	00080137          	lui	sp,0x80
+  20:	ffc10113          	addi	sp,sp,-4 # 7fffc <_estack>
+  24:	fddff0ef          	jal	ra,0 <main>
+  28:	0040006f          	j	2c <_exit>
+
+0000002c <_exit>:
+  2c:	0000006f          	j	2c <_exit>
