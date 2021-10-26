@@ -17,12 +17,93 @@ def setKey(key):
     currKeyCode = key
 
 def asciiToPS2(code):
+    # a
     if code == 65:
         return 28
+    # b
     if code == 66:
+        return 50
+    # c
+    if code == 67:
+        return 33
+    # d
+    if code == 68:
+        return 35
+    # e
+    if code == 69:
+        return 36
+    # f
+    if code == 70:
+        return 43
+    # g
+    if code == 71:
+        return 52
+    # h
+    if code == 72:
+        return 51
+    # i
+    if code == 73:
+        return 67
+    # j
+    if code == 74:
+        return 59
+    # k
+    if code == 75:
+        return 66
+    # l
+    if code == 76:
+        return 75
+    # m
+    if code == 77:
+        return 58
+    # n
+    if code == 78:
+        return 49
+    # o
+    if code == 79:
+        return 68
+    # p
+    if code == 80:
+        return 77
+    # q
+    if code == 81:
+        return 21
+    # r
+    if code == 82:
+        return 45
+    # s
+    if code == 83:
+        return 27
+    # t
+    if code == 84:
+        return 44
+    # u
+    if code == 85:
+        return 60
+    # v
+    if code == 86:
+        return 42
+    # w
+    if code == 87:
         return 29
+    # x
+    if code == 88:
+        return 34
+    # y
+    if code == 89:
+        return 53
+    # z
     if code == 90:
         return 26
+    # enter
+    if code == 13:
+        return 90
+    # backspace
+    if code == 8:
+        return 102
+    # space
+    if code == 32:
+        return 41
     return 0
         
 
